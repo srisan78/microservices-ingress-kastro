@@ -64,8 +64,8 @@ pipeline {
             steps {
                 echo 'Deploying application to Kubernetes...'
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-                        sh "sed -i 's|kastrov/techsolutions-app:latest|kastrov/techsolutions-app:${env.IMAGE_TAG}|g' k8s/deployment.yaml"
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-cred']]) {
+                        sh "sed -i 's|sridhar76/techsolutions-app:latest|kastrov/techsolutions-app:${env.IMAGE_TAG}|g' k8s/deployment.yaml"
                         sh "kubectl apply -f k8s/deployment.yaml"
                         sh "kubectl rollout status deployment/${APP_NAME}-deployment --timeout=300s"
                         sh "kubectl get pods -l app=${APP_NAME}"
@@ -79,7 +79,7 @@ pipeline {
             steps {
                 echo 'Deploying Ingress resource...'
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-cred']]) {
                         sh "kubectl apply -f k8s/ingress.yaml"
                         sleep(10)
                         sh "kubectl get ingress ${APP_NAME}-ingress"
@@ -93,7 +93,7 @@ pipeline {
             steps {
                 echo 'Getting Ingress URL...'
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
+                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-cred']]) {
                         timeout(time: 10, unit: 'MINUTES') {
                             waitUntil {
                                 script {
